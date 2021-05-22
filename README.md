@@ -1,2 +1,2 @@
-# paraweb
+# ParaWeb
 WebApp for paragliders. 
