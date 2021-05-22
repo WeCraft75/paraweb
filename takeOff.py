@@ -27,5 +27,35 @@ class takeOff:
         return self.windGust
 
     def getWindDirection(self):
-        return None
+        if ((self.windDeg >= 338) or (self.windDeg <= 22)):
+            return 'S'
+        elif(22 > self.windDeg > 68):
+            return 'SV'
+        elif (68 >= self.windDeg >= 112):
+            return 'V'
+        elif (112 > self.windDeg > 158):
+            return 'JV'
+        elif (158 >= self.windDeg >= 202):
+            return 'J'
+        elif (202 > self.windDeg > 248):
+            return 'JZ'
+        elif (248 >= self.windDeg >= 292):
+            return 'Z'
+        elif (292 > self.windDeg > 338):
+            return 'SZ'
+
+    def getTemperature(self):
+        return self.temperature
+
+    def getHumidity(self):
+        return self.humidity
+
+    def getPressure(self):
+        return self.pressure
+
+    def getUvi(self):
+        return self.uvi
+
+    def getWeather(self):
+        return self.weather
 
