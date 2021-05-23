@@ -11,8 +11,8 @@ app = Flask(__name__)
 @app.route('/list')
 def getList():
    list = {'jumpPoints':[]}
-   for i in l:
-      pom = l.get(i)
+   for i in launch_sites.l:
+      pom = launch_sites.l.get(i)
       list.get('jumpPoints').append({i: {'lon': pom.get('lon'), 'lan': pom.get('lan')}})
    return json.dumps(list)
 
@@ -20,16 +20,18 @@ def getList():
 @app.route('/data',methods=['GET', 'POST'])
 def getData():
    name = request.args["name"]
-   x = request.args["x"]
-   y = request.args["y"]
-   t = start(name,x,y) ### un l se more al v uno start dodat al pa v konstruktor, ker 'ok' wind thing??
+   atributes = launch_sites.l.get(name)
+   x = atributes.get('lon')
+   y = atributes.get('lat')
+   ok = atributes.get('ok')
+   t = start(name, x, y, ok)
    jumpPoint = {
-      "WindSpeed": t.getWindSpeed(),
-      "WindBust": t.getWindBust(),
-      "WindDirection": t.getWindDirection(),
-      "Temperature": t.getTemperature(),
-      "TimeAndDate": t.getTimeAndDate(),
-      "isWindGood": t.isWindGood()
+      "WindSpeed": t.getWindSpeed, #double
+      "WindBust": t.getWindBust(), #double
+      "WindDirection": t.getWindDirection(), #chat or str
+      "Temperature": t.getTemperature(), #double
+      "TimeAndDate": t.getTimeAndDate(), #date
+      "isWindGood": t.isWindGood() #T/F
    }
    return json.dumps(jumpPoint)
 
@@ -41,6 +43,7 @@ def getData():
 # port - defaults to 5000
 if __name__ == '__main__':
    app.run()
+
 
 
 
