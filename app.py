@@ -2,6 +2,7 @@ from flask import Flask
 import python_weather
 from takeOff import vzletisce
 
+
 app = Flask(__name__)
 
 
