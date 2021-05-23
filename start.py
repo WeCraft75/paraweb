@@ -37,7 +37,7 @@ class start:
     def getTemperature(self):
         return self.data[3]
     
-    # get current wind temperature
+    # get current time and date
     def getTimeAndDate(self):
         return self.data[4]
     
