@@ -12,11 +12,13 @@ soup = BeautifulSoup(requests.post(
 # print(soup.get_text())
 
 jumpPointData = []
-jumpPointName = "Kovk"
+jumpPointName = "Kamšak"
 
 for i in range(1, 6):
     piece_of_data = re.findall(
-        jumpPointName+"\n(.*\n){"+str(i)+"}", string=soup)[0].strip()
+        jumpPointName+"\n(.*\n){"+str(i)+"}", string=soup)[0].strip() # NAME\n(.*\n){i}
     jumpPointData.append(piece_of_data)
 
+
 print(jumpPointData)
+
