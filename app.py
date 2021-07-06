@@ -1,5 +1,4 @@
-import json
-import server.apiUtil as start
+import server.apiUtil as apiUtil
 from flask import Flask
 from flask import request
 
@@ -156,29 +155,33 @@ def getList():
 # returns json of data for given name + coordinats
 
 
-@ app.route("/data", methods=["GET", "POST"])
+@ app.route("/data")
 def getData():
-    name = request.args["name"]
-    atributes = sites.get(name)
-    x = atributes.get("lon")
-    y = atributes.get("lat")
-    ok = atributes.get("ok")
-    t = start(name, x, y, ok)
-    jumpPoint = {
-        "WindSpeed": t.getWindSpeed,  # double
-        "WindBust": t.getWindBust(),  # double
-        "WindDirection": t.getWindDirection(),  # char or str
-        "Temperature": t.getTemperature(),  # double
-        "TimeAndDate": t.getTimeAndDate(),  # date
-        "isWindGood": t.isWindGood()  # T/F
+    name = request.args["jumpPoint"]
+    if name not in sites.keys():
+        return {"error": "pointNotFound", "message": "Jump point requested was not found"}, 404
+
+    args = sites.get(name)
+    x = args["lon"]
+    y = args["lat"]
+    goodWind = args["ok"]
+    util = apiUtil.start(name, x, y, goodWind)
+    jumpPointData = {
+        "windSpeed": util.getWindSpeed(),
+        "windGust": util.getWindGust(),
+        "windDirection": util.getWindDirection(),
+        "temperature": util.getTemperature(),
+        "timeAndDate": util.getTimestamp(),
+        "isWindGood": util.isWindGood()
     }
-    return json.dumps(jumpPoint)
+    print(jumpPointData)
+    return jumpPointData
 
 
 # run() - runs the application on the local development server.
-# app.run([host, port, debug, options])
+# app.run(host, port, debug, options)
 # host - Hostname to listen on. Defaults to 127.0.0.1 (localhost).
 # port - defaults to 5000
 # debug = True for developement enviorment
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=5000, debug=True)
