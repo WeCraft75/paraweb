@@ -13,14 +13,14 @@ function fillList() {
   var flightPointList = document.getElementById("flightList");
   jumpPointsObjectsMock.forEach((element) => {
     /* 
-  Create structure from the following template:
-    <li class="nav-item">
-        <a class="nav-link">
-            <span data-feather="${ICON}"></span>
-            ${vzletisce}
-        </a>
-    </li>
-  */
+    Create structure from the following template:
+      <li class="nav-item">
+          <a class="nav-link">
+              <span data-feather="${ICON}"></span>
+              ${vzletisce}
+          </a>
+      </li>
+    */
     var li = document.createElement("li");
     var a = document.createElement("a");
     var span = document.createElement("span");
@@ -51,8 +51,8 @@ function addPoints() {
     var x = element.x;
     var y = element.y;
 
-    // create popup
-    // TODO make a pretty weather popup
+    // create weather info popup
+    // TODO make it pretty
     leaflet.marker([x, y]).addTo(map).bindPopup(`${pointName}`);
   });
 }
