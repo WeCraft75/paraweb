@@ -1,7 +1,8 @@
 from pyowm.owm import OWM
 
 
-class JumpPoint:
+class takeOff:
+
     def __init__(self, name, lat, lon):
         owm = OWM('fccbb7f106f4603371910d9b192f519e')
         mgr = owm.weather_manager()
