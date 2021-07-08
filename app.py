@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import server.apiUtil as apiUtil
 from flask import Flask
 from flask import request
@@ -178,6 +179,6 @@ def getData():
 # app.run(host, port, debug, options)
 # host - Hostname to listen on. Defaults to 127.0.0.1 (localhost).
 # port - defaults to 5000
-# debug = True for developement enviorment
+# debug = True for developement environment
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)

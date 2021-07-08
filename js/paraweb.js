@@ -1,13 +1,11 @@
 // FILL LIST OF MOCK FLIGHT POINTS
-var jumpPointsObjectsMock = [];
+var jumpPointsList = null;
 var leaflet = window.L;
 var map = leaflet
   .map("mapid", { doubleClickZoom: false })
   .locate({ setView: true, maxZoom: 12 });
 
-leaflet
-  .tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-  .addTo(map);
+leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 function fillList() {
   var flightPointList = document.getElementById("flightList");
@@ -46,10 +44,11 @@ function zoomOnPoint(name) {
 }
 
 function addPoints() {
-  jumpPointsObjectsMock.forEach((element) => {
-    var pointName = element.name;
-    var x = element.x;
-    var y = element.y;
+  Object.keys(jumpPointsList).forEach((name) => {
+    var pointName = name;
+    var x = jumpPointsList[name].lon;
+    var y = jumpPointsList[name].lat;
+    console.log(`${pointName} ${x} ${y} ${typeof (y)}`);
 
     // create weather info popup
     // TODO make it pretty
@@ -76,28 +75,26 @@ function defaultMapDisplay() {
 }
 
 function getPoints() {
-  /*
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("GET", "http://wecraft75.ddns.net:5000/list", false);
-  xmlHttp.send(null);
-  var jumpPoints = JSON.parse(xmlHttp.responseText);
-  console.log(jumpPoints);
-  */
-
-  for (let i = 0; i < 3; i++) {
-    const element = {
-      name: `test ${i}`,
-      x: 45.8861046 + i / 100,
-      y: 13.9599347 + i / 100
-    };
-    jumpPointsObjectsMock.push(element);
+  var jumpPoints = {}
+  try {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "http://192.168.1.95:5000/list", false);
+    xmlHttp.send(null);
+    jumpPoints = JSON.parse(xmlHttp.responseText);
+  } catch (e) {
+    console.error(e)
+  }
+  if (jumpPoints != {}) {
+    //we got the jump points
+    console.log(jumpPoints);
+    jumpPointsList = jumpPoints;
   }
 }
 
 // Load app info
 getPoints();
 addPoints();
-fillList();
+//fillList();
 
 var feather = (function () {
   // feather icon integration
@@ -108,7 +105,7 @@ var feather = (function () {
 map.on("locationfound", setMapToUserLocation);
 map.on("locationerror", defaultMapDisplay);
 
-// Search list elements
+// Searcbar filter sites
 function searchElements() {
   var input, filter, ul, li, a, i, txtValue;
   input = document.getElementById("srchbar");
