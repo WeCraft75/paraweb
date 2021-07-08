@@ -162,10 +162,7 @@ def getData():
         return {"error": "pointNotFound", "message": "Jump point requested was not found"}, 404
 
     args = sites.get(name)
-    x = args["lon"]
-    y = args["lat"]
-    goodWind = args["ok"]
-    util = apiUtil.start(name, x, y, goodWind)
+    util = apiUtil.start(name, args["lon"], args["lat"], args["ok"])
     jumpPointData = {
         "windSpeed": util.getWindSpeed(),
         "windGust": util.getWindGust(),
@@ -174,7 +171,6 @@ def getData():
         "timeAndDate": util.getTimestamp(),
         "isWindGood": util.isWindGood()
     }
-    print(jumpPointData)
     return jumpPointData
 
 
