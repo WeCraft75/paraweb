@@ -5,13 +5,15 @@
 
 /* COLOR COMBO IDEAS */
 /*
-  #1b4d89 #f9e45b #6db784 #ffffff
   #0e0b16 #a239ca #4717f6 #e7dfdd
 */
 
 :root{
   --text-color: #e7dfdd;
   --main-bg-color: #0e0b16;
+  --main-bg-color-lighter: #14111c;
+  --accent-color: #a239ca;
+  --highlight-color: #4717f6;
 }
 
 html,body{
@@ -41,16 +43,18 @@ html,body{
 
 #sitelist {
   grid-area: sitelist;
-  background-color: var(--main-bg-color);
+  background-color: var(--main-bg-color-lighter); 
+  overflow-y: scroll;
 }
 
 #mapcontainer {
   grid-area: mapcontainer;
-  background-color: var(--main-bg-color);
+  background-color: var(--main-bg-color-lighter);
 }
 
 #search {
   grid-area: search;
+  background-color: var(--main-bg-color);
 }
 
 #logo {
@@ -68,12 +72,32 @@ html,body{
   height: 100%;
   border: none;
   outline: none;
-  border-radius: 0;
-  background-color: var(--main-bg-color);
+  background-color: var(--main-bg-color-lighter);
+  color: var(--text-color);
+  padding: 10px;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.3em;
 }
 
 #filter:hover{
-  background-color: var(--text-color);
+  background-color: var(--main-bg-color-lighter);
+}
+
+.jumppoint{
+  width: 100%;
+  height: 2em;
+  border-radius: 0;
+  background-color: var(--main-bg-color-lighter);
+  color: var(--text-color);
+  padding: 10px;
+  padding-left: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.3em;
+}
+
+.jumppoint:hover{
+  background-color: var(--main-bg-color);
 }
 
 #mapid{

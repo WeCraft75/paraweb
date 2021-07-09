@@ -1,44 +1,28 @@
 // FILL LIST OF MOCK FLIGHT POINTS
 var jumpPointsList = null;
 var leaflet = window.L;
-var map = leaflet
-  .map("mapid", { doubleClickZoom: false })
-  .locate({ setView: true, maxZoom: 12 });
-
+var map = leaflet.map("mapid", { doubleClickZoom: false }).locate({ setView: true, maxZoom: 12 });
 leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-function fillList() {
-  var flightPointList = document.getElementById("flightList");
-  jumpPointsObjectsMock.forEach((element) => {
-    /* 
-    Create structure from the following template:
-      <li class="nav-item">
-          <a class="nav-link">
-              <span data-feather="${ICON}"></span>
-              ${vzletisce}
-          </a>
-      </li>
-    */
-    var li = document.createElement("li");
-    var a = document.createElement("a");
-    var span = document.createElement("span");
-    li.setAttribute("class", "nav-item");
-    a.setAttribute("class", "nav-link");
-    a.setAttribute("onclick", "zoomOnPoint(this.name)");
-    a.setAttribute("name", element.name);
 
-    span.setAttribute("data-feather", "cloud-off");
-    a.appendChild(span);
-    a.innerHTML += "\n" + element.name;
-    li.appendChild(a);
-    flightPointList.appendChild(li);
+function fillList() {
+  var sitelist = document.getElementById("sitelist");
+  Object.keys(jumpPointsList).forEach((name) => {
+    var point = document.createElement("div");
+    point.className = "jumppoint";
+    point.innerHTML = name;
+    point.setAttribute("name", name.toLowerCase());
+    point.setAttribute("onclick", "zoomOnPoint(this)");
+    // TODO: this is only text, make it remotely beautiful
+    sitelist.appendChild(point);
   });
 }
 
-function zoomOnPoint(name) {
-  jumpPointsObjectsMock.forEach((element) => {
-    if (name === element.name) {
-      map.flyTo([element.x, element.y], 14);
+function zoomOnPoint(toFind) {
+  Object.keys(jumpPointsList).forEach((name) => {
+    if (toFind.getAttribute("name") == name.toLowerCase()) {
+      var point = jumpPointsList[name];
+      map.flyTo([point.lon, point.lat], 14);
     }
   });
 }
@@ -48,7 +32,6 @@ function addPoints() {
     var pointName = name;
     var x = jumpPointsList[name].lon;
     var y = jumpPointsList[name].lat;
-    console.log(`${pointName} ${x} ${y} ${typeof (y)}`);
 
     // create weather info popup
     // TODO make it pretty
@@ -65,8 +48,7 @@ function setMapToUserLocation(e) {
 
   leaflet
     .circle(e.latlng, radius, { color: "#ff2919", opacity: "0.4" })
-    .addTo(map)
-    .bindPopup(`Your location within a ${radius}m radius`);
+    .addTo(map);
 }
 
 function defaultMapDisplay() {
@@ -85,16 +67,17 @@ function getPoints() {
     console.error(e)
   }
   if (jumpPoints != {}) {
-    //we got the jump points
-    console.log(jumpPoints);
     jumpPointsList = jumpPoints;
+  }
+  else {
+    alert("There was an error loading the list of jump points.");
   }
 }
 
 // Load app info
 getPoints();
 addPoints();
-//fillList();
+fillList();
 
 var feather = (function () {
   // feather icon integration
@@ -105,20 +88,11 @@ var feather = (function () {
 map.on("locationfound", setMapToUserLocation);
 map.on("locationerror", defaultMapDisplay);
 
-// Searcbar filter sites
+// Searchbar filter sites
 function searchElements() {
-  var input, filter, ul, li, a, i, txtValue;
-  input = document.getElementById("srchbar");
-  filter = input.value.toUpperCase();
-  ul = document.getElementById("flightList");
-  li = ul.getElementsByTagName("li");
-  for (i = 0; i < li.length; i++) {
-    a = li[i].getElementsByTagName("a")[0];
-    txtValue = a.textContent || a.innerText;
-    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-      li[i].style.display = "";
-    } else {
-      li[i].style.display = "none";
-    }
+  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+    li[i].style.display = "";
+  } else {
+    li[i].style.display = "none";
   }
 }

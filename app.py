@@ -5,8 +5,6 @@ from flask import request
 
 app = Flask(__name__)
 
-# returns json of names + coordinates
-
 # hardcoded list of sites, could get list from scraping
 sites = {
     "Gozd": {
@@ -150,10 +148,11 @@ def getList():
         filtered["lat"] = sites[name].get("lat")
         filtered["lon"] = sites[name].get("lon")
         list[name] = filtered
+        # returns sites dict without good wind ("ok")
     print(list.keys())
     return list  # flask converts dict to json
 
-# returns json of data for given name + coordinats
+# returns data for given name
 
 
 @ app.route("/data")
