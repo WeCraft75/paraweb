@@ -65,6 +65,7 @@ html,body{
   font-size: 2em;
   padding-top: 0.25em;
   color: var(--text-color);
+  user-select: none;
 }
 
 #filter{
@@ -94,10 +95,12 @@ html,body{
   padding-left: 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1.3em;
+  user-select: none;
 }
 
 .jumppoint:hover{
   background-color: var(--main-bg-color);
+  cursor: pointer;
 }
 
 #mapid{

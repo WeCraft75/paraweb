@@ -57,17 +57,17 @@ function defaultMapDisplay() {
 }
 
 function getPoints() {
-  var jumpPoints = {}
+  var jumpPointsFromAPI = {}
   try {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("GET", "http://192.168.1.95:5000/list", false);
     xmlHttp.send(null);
-    jumpPoints = JSON.parse(xmlHttp.responseText);
+    jumpPointsFromAPI = JSON.parse(xmlHttp.responseText);
   } catch (e) {
     console.error(e)
   }
-  if (jumpPoints != {}) {
-    jumpPointsList = jumpPoints;
+  if (jumpPointsFromAPI != {}) {
+    jumpPointsList = jumpPointsFromAPI;
   }
   else {
     alert("There was an error loading the list of jump points.");
@@ -89,10 +89,21 @@ map.on("locationfound", setMapToUserLocation);
 map.on("locationerror", defaultMapDisplay);
 
 // Searchbar filter sites
-function searchElements() {
-  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-    li[i].style.display = "";
-  } else {
-    li[i].style.display = "none";
+function searchElements(inputElement) {
+  var toFind = inputElement.value;
+  var jumpPoints = document.getElementsByClassName("jumppoint");
+  var matching = [];
+  for (let i = 0; i < jumpPoints.length; i++) {
+    var current = jumpPoints[i].getAttribute("name");
+    if (current.toLowerCase().indexOf(toFind) > -1) {
+      jumpPoints[i].setAttribute("style", "");
+      matching.push(jumpPoints[i]);
+    }
+    else {
+      jumpPoints[i].setAttribute("style", "display:none");
+    }
+  }
+  if (matching.length == 1) {
+    zoomOnPoint(matching[0]);
   }
 }
