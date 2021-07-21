@@ -2,6 +2,7 @@
 import server.apiUtil as apiUtil
 from flask import Flask
 from flask import request
+import json
 
 app = Flask(__name__)
 
@@ -150,8 +151,7 @@ def getList():
         list[name] = filtered
         # returns sites dict without good wind ("ok")
     print(list.keys())
-    return list  # flask converts dict to json
-
+    return json.dumps(list)
 # returns data for given name
 
 
@@ -168,10 +168,10 @@ def getData():
         "windGust": util.getWindGust(),
         "windDirection": util.getWindDirection(),
         "temperature": util.getTemperature(),
-        "timeAndDate": util.getTimestamp(),
+        "timeAndDate": util.getTimestamp(),  # TODO: convert timestamp to utf
         "isWindGood": util.isWindGood()
     }
-    return jumpPointData
+    return json.dumps(jumpPointData)
 
 
 # run() - runs the application on the local development server.

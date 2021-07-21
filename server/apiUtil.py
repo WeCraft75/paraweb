@@ -53,6 +53,7 @@ def getCurrentWindInfo(jumpPointName):
     jumpPointData[0] = float(jumpPointData[0].replace(" m/s", ""))
     jumpPointData[1] = float(jumpPointData[1].replace(" m/s", ""))
     jumpPointData[3] = float(jumpPointData[3].replace("°C", ""))
-    jumpPointData[4] = datetime.strptime(jumpPointData[4], "%H:%M %d.%m.%Y")
+    jumpPointData[4] = str(datetime.strptime(
+        jumpPointData[4], "%H:%M %d.%m.%Y"))
     # data = (wind speed, wind gust, wind direction, temperature, time and date)
     return jumpPointData
