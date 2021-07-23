@@ -1,4 +1,4 @@
-# pip install requests beautifulsoup4
+# -*- coding: UTF-8 -*-
 from datetime import datetime
 import requests
 import re
