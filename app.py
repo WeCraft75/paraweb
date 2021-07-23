@@ -7,6 +7,7 @@ import json
 app = Flask(__name__)
 
 # hardcoded list of sites, could get list from scraping
+# https://positionstack.com/
 sites = {
     "Gozd": {
         "lon": 46.3395,
@@ -168,7 +169,7 @@ def getData():
         "windGust": util.getWindGust(),
         "windDirection": util.getWindDirection(),
         "temperature": util.getTemperature(),
-        "timeAndDate": util.getTimestamp(),  # TODO: convert timestamp to utf
+        "timeAndDate": util.getTimestamp(),
         "isWindGood": util.isWindGood()
     }
     return json.dumps(jumpPointData)

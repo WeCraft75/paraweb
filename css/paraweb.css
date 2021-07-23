@@ -9,9 +9,9 @@
 */
 
 :root{
-  --text-color: #e7dfdd;
-  --main-bg-color: #0e0b16;
-  --main-bg-color-lighter: #14111c;
+  --text-color: #14111c;
+  --main-bg-color: #f0e9e7;
+  --main-bg-color-lighter: #f7f0ef;
   --accent-color: #a239ca;
   --highlight-color: #4717f6;
 }
