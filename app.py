@@ -48,7 +48,7 @@ sites = {
         "lat": 14.6395,
         "ok": {"J", "JV"}
     },
-    "Mangrtsko Sedlo": {
+    "Mangrt": {
         "lon": 46.4334,
         "lat": 13.6407,
         "ok": {"JZ", "J", "JV", "V", "Z"}
@@ -68,7 +68,7 @@ sites = {
         "lat": 13.4732,
         "ok": {"JZ", "J", "JV", "V", "Z"}
     },
-    "Srednji vrh - Matajur": {
+    "Srednji vrh (Matajur)": {
         "lon": 46.209,
         "lat": 13.5663,
         "ok": {"SV", "S"}
@@ -166,6 +166,8 @@ def getData():
     y = args["lat"]
     goodWind = args["ok"]
     util = apiUtil.start(name, x, y, goodWind)
+    if len(util.getData()) < 1:
+        return {"error": "pointNotFound", "message": "Jump point requested was not found"}, 404
     jumpPointData = {
         "windSpeed": util.getWindSpeed(),
         "windGust": util.getWindGust(),
