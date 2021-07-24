@@ -46,6 +46,12 @@ html,body{
   background-color: var(--main-bg-color-lighter); 
   overflow-y: scroll;
 }
+.weathericon{
+  width: 18px;
+  height: 18px;
+  display: block;
+  float: right;
+}
 
 #mapcontainer {
   grid-area: mapcontainer;

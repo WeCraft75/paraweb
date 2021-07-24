@@ -171,6 +171,7 @@ def getData():
         "temperature": util.getTemperature(),
         "timeAndDate": util.getTimestamp(),
         "isWindGood": util.isWindGood()
+        # TODO: send weather
     }
     return json.dumps(jumpPointData)
 

@@ -11,7 +11,12 @@ function fillList() {
   Object.keys(jumpPointsList).sort().forEach((name) => {
     var point = document.createElement("div");
     point.className = "jumppoint";
-    point.innerHTML = name;
+    var iconName = "cloud-off";
+    switch (jumpPointsList[name]) {
+      case "xd":
+        break;
+    }
+    point.innerHTML = `${name} <div data-feather="${iconName}" class="weathericon"></div>`;
     point.setAttribute("name", name);
     point.setAttribute("onclick", "zoomOnPoint(this)");
     // TODO: this is only text, make it remotely beautiful
@@ -30,13 +35,28 @@ function zoomOnPoint(toFind) {
 
 function addPoints() {
   Object.keys(jumpPointsList).sort().forEach((name) => {
-    var pointName = name;
+    var singlepoint = jumpPointsList[name];
+    var text = name;
+    console.log(Object.keys(singlepoint).length > 2);
+    if (Object.keys(singlepoint).length > 2) {
+      // if we have more than 2 datapoints, get was successful
+      var windText = "";
+      if (singlepoint["isWindGood"]) {
+        windText = "Veter je ugoden";
+      } else {
+        windText = "Veter ni ugoden";
+      }
+      text = `${name}<br/>${windText}`;
+    } else {
+      // if data fails to load, we only have lon and lat 
+      text += "<br/>Podatkov ni bilo mogoče pridobiti."
+    }
     var x = jumpPointsList[name].lon;
     var y = jumpPointsList[name].lat;
 
     // create weather info popup
     // TODO: make it pretty
-    leaflet.marker([x, y]).addTo(map).bindPopup(`${pointName}`);
+    leaflet.marker([x, y]).addTo(map).bindPopup(`${text}`);
   });
 }
 
@@ -95,7 +115,7 @@ async function getWeatherForPoint(jumpPointName) {
   });
 }
 
-async function getWeather() {
+async function getWeather(callback) {
   var pointlist = Object.keys(jumpPointsList);
   for (let i = 0; i < pointlist.length; i++) {
     let dataForPoint = await getWeatherForPoint(pointlist[i]);
@@ -104,23 +124,19 @@ async function getWeather() {
       jumpPointsList[pointlist[i]]["timeAndDate"] = Date.parse(pointlist[i]["timeAndDate"]);
     });
   }
+  callback();
 }
 
+var afterWeather = () => {
+  fillList();
+  addPoints();
+  // feather icon integration
+  feather.replace();
+}
 
 // Load app info
 getPoints();
-addPoints();
-getWeather();
-
-setTimeout(() => {
-  console.log(jumpPointsList);
-  fillList();
-}, 8000);
-
-var feather = (function () {
-  // feather icon integration
-  feather.replace();
-})();
+getWeather(afterWeather);
 
 // Set event listeners
 map.on("locationfound", setMapToUserLocation);
