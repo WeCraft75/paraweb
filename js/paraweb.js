@@ -36,21 +36,24 @@ function zoomOnPoint(toFind) {
 function addPoints() {
   Object.keys(jumpPointsList).sort().forEach((name) => {
     var singlepoint = jumpPointsList[name];
-    var text = name;
-    console.log(Object.keys(singlepoint).length > 2);
+    var text = `<div class="popupheader">${name}</div>`;
     if (Object.keys(singlepoint).length > 2) {
       // if we have more than 2 datapoints, get was successful
-      var windText = "";
       if (singlepoint["isWindGood"]) {
-        windText = "Veter je ugoden";
+        text += "Veter je ugoden";
       } else {
-        windText = "Veter ni ugoden";
+        text += "Veter ni ugoden";
       }
-      text = `${name}<br/>${windText}`;
+      // add other info
+      var slovenianWindDir = singlepoint["windDirection"].replace("S", "J").replace("E", "V").replace("W", "Z").replace("N", "S");
+      text += `<br/>Veter piha v smeri ${slovenianWindDir} s hitrostjo ${singlepoint["windSpeed"]} m/s, ter sunki do ${singlepoint["windGust"]} m/s`;
+      text += `<br/>Temperatura na vzletišču: ${singlepoint["temperature"]}°C`;
+
     } else {
-      // if data fails to load, we only have lon and lat 
+      // if data fails to load, display error message
       text += "<br/>Podatkov ni bilo mogoče pridobiti."
     }
+
     var x = jumpPointsList[name].lon;
     var y = jumpPointsList[name].lat;
 
@@ -62,6 +65,11 @@ function addPoints() {
 
 function setMapToUserLocation(e) {
   var radius = e.accuracy;
+  if (radius > 2000) {
+    // filter for inaccurate location search
+    defaultMapDisplay();
+    return;
+  }
   leaflet
     .marker(e.latlng)
     .addTo(map)
