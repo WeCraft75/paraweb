@@ -164,8 +164,6 @@ def getData():
 
     args = sites.get(name)
     util = apiUtil.start(name, args["lon"], args["lat"], args["ok"])
-    if len(util.getData()) < 1:
-        return {"error": "pointNotFound", "message": "Jump point requested was not found"}, 404
     jumpPointData = {
         "windSpeed": util.getWindSpeed(),
         "windGust": util.getWindGust(),
@@ -173,6 +171,7 @@ def getData():
         "temperature": util.getTemperature(),
         "timeAndDate": util.getTimestamp(),
         "isWindGood": util.isWindGood()
+        # TODO: send weather
     }
     return json.dumps(jumpPointData)
 

@@ -46,10 +46,26 @@ html,body{
   background-color: var(--main-bg-color-lighter); 
   overflow-y: scroll;
 }
+.weathericon{
+  width: 18px;
+  height: 18px;
+  display: block;
+  float: right;
+}
 
 #mapcontainer {
   grid-area: mapcontainer;
   background-color: var(--main-bg-color-lighter);
+}
+.leaflet-popup-content{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.15em;
+}
+
+.popupheader{
+  text-align: center;
+  font-size: 1.2em;
+  height: 1.22em;
 }
 
 #search {
@@ -59,7 +75,7 @@ html,body{
 
 #logo {
   grid-area: logo;
-  background-color: var(--main-bg-color);
+  background-color: var(--main-bg-color-lighter);
   font-family: KronaOne, Arial, Helvetica, sans-serif;
   text-align: center;
   font-size: 2em;
