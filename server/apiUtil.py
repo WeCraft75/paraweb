@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 import re
 from bs4 import BeautifulSoup
-import weatherManager as wm
+import server.weatherManager as wm
 
 
 class start:

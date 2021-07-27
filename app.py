@@ -1,10 +1,9 @@
 # -*- coding: UTF-8 -*-
 import server.apiUtil as apiUtil
-from flask import Flask
-from flask import request
+from flask import Flask, request, redirect
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 # hardcoded list of sites, could get list from scraping
 # https://positionstack.com/
@@ -154,7 +153,7 @@ def getList():
     return json.dumps(list)
 
 
-@ app.route("/data")
+@app.route("/data")
 def getData():
     # returns data for given name
     name = request.args["jumpPoint"]
@@ -175,6 +174,18 @@ def getData():
         "pressure": util.getPressure()
     }
     return json.dumps(jumpPointData)
+
+
+"""
+@app.route("/<path:path>")
+def static_file(path):
+    return app.send_static_file(path)
+"""
+
+
+@app.route('/')
+def hello():
+    return redirect("static/index.html", code=302)
 
 
 # run() - runs the application on the local development server.
