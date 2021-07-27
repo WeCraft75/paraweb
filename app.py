@@ -151,13 +151,12 @@ def getList():
         filtered["lon"] = sites[name].get("lon")
         list[name] = filtered
         # returns sites dict without good wind ("ok")
-    print(list.keys())
     return json.dumps(list)
-# returns data for given name
 
 
 @ app.route("/data")
 def getData():
+    # returns data for given name
     name = request.args["jumpPoint"]
     if name not in sites.keys():
         return {"error": "pointNotFound", "message": "Jump point requested was not found"}, 404
@@ -170,8 +169,10 @@ def getData():
         "windDirection": util.getWindDirection(),
         "temperature": util.getTemperature(),
         "timeAndDate": util.getTimestamp(),
-        "isWindGood": util.isWindGood()
-        # TODO: send weather
+        "isWindGood": util.isWindGood(),
+        "weather": util.getWeather(),
+        "humidity": util.getHumidity(),
+        "pressure": util.getPressure()
     }
     return json.dumps(jumpPointData)
 

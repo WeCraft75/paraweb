@@ -3,16 +3,17 @@ from datetime import datetime
 import requests
 import re
 from bs4 import BeautifulSoup
+import weatherManager as wm
 
 
 class start:
-
     def __init__(self, name, lon, lat, goodWind):
         self.name = name
         self.lon = lon
         self.lat = lat
         self.goodWind = goodWind
         self.data = getCurrentWindInfo(name)
+        self.manager = wm.manager(lat, lon)
 
     def getWindSpeed(self):
         return self.data[0]
@@ -38,6 +39,15 @@ class start:
     # returns true if wind is optimal
     def isWindGood(self):
         return (self.data[2] in self.goodWind)
+
+    def getWeather(self):
+        return self.manager.getWeather()
+
+    def getHumidity(self):
+        return self.manager.getHumidity()
+
+    def getPressure(self):
+        return self.manager.getPressure()["press"]
 
 
 def getCurrentWindInfo(jumpPointName):
