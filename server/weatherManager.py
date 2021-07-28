@@ -19,7 +19,8 @@ class manager:
         self.pressure = owmData.current.pressure  # mbar
         self.uvi = owmData.current.uvi
         observation = manager.weather_at_coords(lat=lat, lon=lon)
-        self.weather = observation.weather.detailed_status
+        self.weather = observation.weather.status
+        self.detailedWeather = observation.weather.detailed_status
 
     def getTemperature(self):
         return self.temperature
@@ -35,3 +36,6 @@ class manager:
 
     def getWeather(self):
         return self.weather
+
+    def getDetailedWeather(self):
+        return self.detailedWeather

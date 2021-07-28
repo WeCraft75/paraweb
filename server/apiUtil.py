@@ -43,6 +43,9 @@ class start:
     def getWeather(self):
         return self.manager.getWeather()
 
+    def getDetailedWeather(self):
+        return self.manager.getDetailedWeather()
+
     def getHumidity(self):
         return self.manager.getHumidity()
 

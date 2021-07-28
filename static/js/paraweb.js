@@ -11,10 +11,32 @@ function fillList() {
   Object.keys(jumpPointsList).sort().forEach((name) => {
     var point = document.createElement("div");
     point.className = "jumppoint";
+    var foggy = ["Mist", "Fog", "Haze", "Smoke"];
     var iconName = "cloud-off";
-    switch (jumpPointsList[name]) {
-      case "xd":
+    switch (jumpPointsList[name]["weather"]) {
+      case "Clouds":
+        iconName = "cloud";
         break;
+      case "Rain":
+        iconName = "cloud-rain";
+        break;
+      case "Thunderstorm":
+        iconName = "cloud-lightning";
+        break;
+      case "Clear":
+        iconName = "sun";
+        break;
+      case "Snow":
+        iconName = "cloud-snow";
+        break;
+      case "Drizzle":
+        iconName = "cloud-drizzle";
+        break;
+      default:
+        if (foggy.includes(jumpPointsList[name]["weather"])) {
+          console.log("gotem");
+          iconName = "menu";
+        }
     }
     point.innerHTML = `${name} <div data-feather="${iconName}" class="weathericon"></div>`;
     point.setAttribute("name", name);
@@ -48,6 +70,7 @@ function addPoints() {
       var slovenianWindDir = singlepoint["windDirection"].replace("S", "J").replace("E", "V").replace("W", "Z").replace("N", "S");
       text += `<br/>Veter piha v smeri ${slovenianWindDir} s hitrostjo ${singlepoint["windSpeed"]} m/s, ter sunki do ${singlepoint["windGust"]} m/s`;
       text += `<br/>Temperatura na vzletišču: ${singlepoint["temperature"]}°C`;
+      text += `<br/>Trenutno vreme: ${singlepoint["detailedWeather"]}`;
 
     } else {
       // if data fails to load, display error message

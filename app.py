@@ -170,17 +170,11 @@ def getData():
         "timeAndDate": util.getTimestamp(),
         "isWindGood": util.isWindGood(),
         "weather": util.getWeather(),
+        "detailedWeather": util.getDetailedWeather(),
         "humidity": util.getHumidity(),
         "pressure": util.getPressure()
     }
     return json.dumps(jumpPointData)
-
-
-"""
-@app.route("/<path:path>")
-def static_file(path):
-    return app.send_static_file(path)
-"""
 
 
 @app.route('/')
@@ -194,4 +188,5 @@ def hello():
 # port - defaults to 5000
 # debug = True for developement environment
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run('0.0.0.0',  port=5000)
+    # TODO: generate signed cert
