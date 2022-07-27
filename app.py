@@ -5,14 +5,15 @@ import requests
 from bs4 import BeautifulSoup
 from os.path import exists
 
+# http://api.positionstack.com/v1/?access_key=ebecf82f61b08e636501c15807b3c2e1&query='{site} Slovenija'
+# settings
+pw_host = "0.0.0.0"
+pw_port = 5001
+pw_sitelistFileName = "sitelist.json"
+
+
 app = Flask(__name__, static_url_path='/static')
 
-if not exists("sitelist.json"):
-    # create file and populate
-    print("[WARNING] sitelist.json doesn't exist, recreating...")
-    with open("sitelist.json", "w") as f:
-        f.write("{}")
-        f.close()
 
 # hardcoded list of sites, could get list from scraping
 sites = {
@@ -148,14 +149,12 @@ sites = {
     }
 }
 
-siteListFile = open("sitelist.json", "r+")
-siteListFile.write(json.dumps(sites))
-siteListFile.close
-
 # TODO: if we encounter a new jump site, add it to the file with coordinates attached
 #       coordinates should be pulled from an api, such as https://positionstack.com
 # TODO: remove old sites from file
 # TODO: email notification for good wind? (i dont know how to get it automatically)
+
+# autosetup code
 
 
 def getPointsFromAPI():
@@ -171,6 +170,47 @@ def getPointsFromAPI():
     linesText.sort()
 
     return linesText
+
+
+def regenerateFile():
+    with open(pw_sitelistFileName, "w") as f:
+        availabileSites = getPointsFromAPI()
+        newSites = {}
+        # remove all points that dont exist anymore
+        for site in availabileSites:
+            if site in sites:
+                newSites[site] = sites[site]
+
+        # get all new sites
+        notinSites = [site for site in availabileSites if site not in list(
+            newSites.keys())]
+
+        # get data for all new sites
+        for site in notinSites:
+            url = f"http://api.positionstack.com/v1/forward?access_key=ebecf82f61b08e636501c15807b3c2e1&query={site}&country=SI"
+            resp = requests.get(url).json()["data"]
+            if len(resp) != 0:
+                resp = resp[0]
+                new = {}
+                new["lon"] = resp["longitude"]
+                new["lat"] = resp["latitude"]
+                newSites[site] = new
+        f.write(json.dumps(newSites))
+        f.close()
+        return
+
+
+def addPointToFile(jumpPointName):
+
+    return
+
+
+if not exists(pw_sitelistFileName):
+    print("[WARNING] sitelist.json doesn't exist, recreating...")
+    regenerateFile()
+
+
+# Flask
 
 
 @app.route("/list")
@@ -220,15 +260,14 @@ def hello():
     return redirect("static/index.html", code=302)
 
 
-# app.run(host, port, debug, options)
+# app.run(host, port, debug)
 # host - Hostname to listen on
 # port - Default 5000
-# debug - True if you want to use the flask debugger
-# options - idk
+# debug - True if you want to use the flask debugger (hot reloads, debug server)
 if __name__ == "__main__":
     # for dev only
     xd = getPointsFromAPI()
     print("Link so that you can use geolocation: http://localhost:5001")
     # production
-    app.run('0.0.0.0', port=5001)
-    # TODO: generate signed cert
+    app.run(pw_host, port=pw_port, debug=True)
+    # TODO: generate certificate
