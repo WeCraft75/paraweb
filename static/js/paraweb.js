@@ -112,7 +112,8 @@ function getPoints() {
   var jumpPointsFromAPI = {}
   try {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "http://wecraft75.ddns.net:5000/list", false);
+    console.log(`${window.location.origin}/list`);
+    xmlHttp.open("GET", `${window.location.origin}/list`, false);
     xmlHttp.send(null);
     jumpPointsFromAPI = JSON.parse(xmlHttp.responseText);
   } catch (e) {
@@ -131,7 +132,7 @@ async function getWeatherForPoint(jumpPointName) {
     var response = {};
     try {
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", `http://wecraft75.ddns.net:5000/data?jumpPoint=${jumpPointName}`, false);
+      xmlHttp.open("GET", `${window.location.origin}/data?jumpPoint=${jumpPointName}`, false);
       xmlHttp.send(null);
       response = xmlHttp;
     } catch (e) {
