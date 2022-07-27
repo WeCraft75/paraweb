@@ -1,9 +1,12 @@
-import server.apiUtil as apiUtil
-from flask import Flask, request, redirect
 import json
+from os.path import exists
+import copy
+
 import requests
 from bs4 import BeautifulSoup
-from os.path import exists
+from flask import Flask, redirect, request, Response
+
+import server.apiUtil as apiUtil
 
 # http://api.positionstack.com/v1/?access_key=ebecf82f61b08e636501c15807b3c2e1&query='{site} Slovenija'
 # settings
@@ -15,7 +18,7 @@ pw_sitelistFileName = "sitelist.json"
 app = Flask(__name__, static_url_path='/static')
 
 
-# hardcoded list of sites, could get list from scraping
+# hardcoded list of sites, needed for more accurate jump point data and ugodni_veter (good_wind_direction) data
 sites = {
     "Gozd": {
         "lon": 46.3395,
@@ -146,15 +149,25 @@ sites = {
         "lon": 46.3705,
         "lat": 14.9206,
         "ok": ["J", "JV", "V"]
+    },
+    "Zavrh": {
+        "lon": 45.903366,
+        "lat": 14.353807,
+        "ok": []
     }
 }
 
-# TODO: if we encounter a new jump site, add it to the file with coordinates attached
-#       coordinates should be pulled from an api, such as https://positionstack.com
-# TODO: remove old sites from file
-# TODO: email notification for good wind? (i dont know how to get it automatically)
+# TODO: email notification for new site detected, so that i can manually add good wind? (i dont know how to get it automatically)
+#       oh, and the api for location can offer you multiple locations, so its better to add (or verify) each one manually
+
 
 # autosetup code
+
+def getRawFromAPI():
+    url = "http://skytech.si/skytechsys/data.php"
+    reqBody = {"c": "tabela"}
+    rawReq = requests.post(url=url, data=reqBody)
+    return rawReq.text
 
 
 def getPointsFromAPI():
@@ -174,6 +187,7 @@ def getPointsFromAPI():
 
 def regenerateFile():
     with open(pw_sitelistFileName, "w") as f:
+        global sites
         availabileSites = getPointsFromAPI()
         newSites = {}
         # remove all points that dont exist anymore
@@ -192,37 +206,39 @@ def regenerateFile():
             if len(resp) != 0:
                 resp = resp[0]
                 new = {}
-                new["lon"] = resp["longitude"]
-                new["lat"] = resp["latitude"]
+                # lat and lon is switched around bc when they were creating the original "sites" dict, they did a fucking boo boo :(
+                # TODO: fuck... fucking fuck, why ;_; ... i will make a program that fixes this no way i'm doing it manually
+                new["lon"] = resp["latitude"]
+                new["lat"] = resp["longitude"]
+                new["ok"] = []
                 newSites[site] = new
         f.write(json.dumps(newSites))
         f.close()
+        sites = newSites | sites
         return
 
 
-def addPointToFile(jumpPointName):
-
-    return
-
-
 if not exists(pw_sitelistFileName):
-    print("[WARNING] sitelist.json doesn't exist, recreating...")
+    print(f"[WARNING] {pw_sitelistFileName} doesn't exist, recreating...")
     regenerateFile()
+else:
+    with open(pw_sitelistFileName, "r") as f:
+        sites = json.loads(f.read())
 
 
-# Flask
+# Flask code
 
 
 @app.route("/list")
 def getList():
-    list = {}
+    # returns sites dict without good wind ("ok")
+    sitelist = {}
     for name in sites.keys():
         filtered = {}
         filtered["lat"] = sites[name].get("lat")
         filtered["lon"] = sites[name].get("lon")
-        list[name] = filtered
-        # returns sites dict without good wind ("ok")
-    return json.dumps(list)
+        sitelist[name] = filtered
+    return Response(json.dumps(sitelist), mimetype="application/json")
 
 
 @app.route("/data")
@@ -246,13 +262,17 @@ def getData():
         "humidity": util.getHumidity(),
         "pressure": util.getPressure()
     }
-    return json.dumps(jumpPointData)
+    return Response(json.dumps(jumpPointData), mimetype="application/json")
 
 
 @app.route('/full')
 def allData():
-    # check if point is not in file
-    return ""
+    global sites
+    parsed = BeautifulSoup(getRawFromAPI(), features="html.parser")
+    allRows = list(parsed.find_all("tr"))
+
+    temp = copy.deepcopy(sites)
+    return Response(json.dumps(sites), mimetype="application/json")
 
 
 @app.route('/')
