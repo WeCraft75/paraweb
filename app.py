@@ -1,144 +1,176 @@
-# -*- coding: UTF-8 -*-
 import server.apiUtil as apiUtil
 from flask import Flask, request, redirect
 import json
+import requests
+from bs4 import BeautifulSoup
+from os.path import exists
 
 app = Flask(__name__, static_url_path='/static')
 
+if not exists("sitelist.json"):
+    # create file and populate
+    print("[WARNING] sitelist.json doesn't exist, recreating...")
+    with open("sitelist.json", "w") as f:
+        f.write("{}")
+        f.close()
+
 # hardcoded list of sites, could get list from scraping
-# https://positionstack.com/
 sites = {
     "Gozd": {
         "lon": 46.3395,
         "lat": 14.3313,
-        "ok": {"JZ", "J", "JV"}
+        "ok": ["JZ", "J", "JV"]
     },
     "Ratitovec": {
         "lon": 46.2361,
         "lat": 14.0906,
-        "ok": {"J", "JV"}
+        "ok": ["J", "JV"]
     },
     "Vogar": {
         "lon": 46.2946,
         "lat": 13.8755,
-        "ok": {"JZ", "J", "JV"}
+        "ok": ["JZ", "J", "JV"]
     },
     "Vogel": {
         "lon": 46.2518,
         "lat": 13.839,
-        "ok": {"JV", "V", "SV"}
+        "ok": ["JV", "V", "SV"]
     },
     "Kranjska Gora": {
         "lon": 46.5044,
         "lat": 13.7954,
-        "ok": {"J"}
+        "ok": ["J"]
     },
     "Ambrož pod Krvavcem": {
         "lon": 46.2752,
         "lat": 14.5279,
-        "ok": {"JZ", "J", "JV"}
+        "ok": ["JZ", "J", "JV"]
     },
     "Kriška gora": {
         "lon": 46.3515,
         "lat": 14.3332,
-        "ok": {"JZ", "J", "JV"}
+        "ok": ["JZ", "J", "JV"]
     },
     "Velika planina": {
         "lon": 46.2946,
         "lat": 14.6395,
-        "ok": {"J", "JV"}
+        "ok": ["J", "JV"]
     },
     "Mangrt": {
         "lon": 46.4334,
         "lat": 13.6407,
-        "ok": {"JZ", "J", "JV", "V", "Z"}
+        "ok": ["JZ", "J", "JV", "V", "Z"]
     },
     "Kobala": {
         "lon": 46.1806,
         "lat": 13.7791,
-        "ok": {"JZ", "J", "JV", "V", "Z"}
+        "ok": ["JZ", "J", "JV", "V", "Z"]
     },
     "Kovk": {
         "lon": 45.8865,
         "lat": 13.9591,
-        "ok": {"JZ", "J", "JV"}
+        "ok": ["JZ", "J", "JV"]
     },
     "Kobariški Stol": {
         "lon": 46.2727,
         "lat": 13.4732,
-        "ok": {"JZ", "J", "JV", "V", "Z"}
+        "ok": ["JZ", "J", "JV", "V", "Z"]
     },
     "Srednji vrh (Matajur)": {
         "lon": 46.209,
         "lat": 13.5663,
-        "ok": {"SV", "S"}
+        "ok": ["SV", "S"]
     },
     "Kobariški Kuk - jug": {
         "lon": 46.1952,
         "lat": 13.6198,
-        "ok": {"JZ", "J", "JV"}
+        "ok": ["JZ", "J", "JV"]
     },
     "Lijak": {
         "lon": 45.9636,
         "lat": 13.7236,
-        "ok": {"JZ", "J", "JV", "V", "Z"}
+        "ok": ["JZ", "J", "JV", "V", "Z"]
     },
     "Slivnica": {
         "lon": 45.7886,
         "lat": 14.4067,
-        "ok": {"JZ", "J", "JV", "Z"}
+        "ok": ["JZ", "J", "JV", "Z"]
     },
     "Slivnica": {
         "lon": 45.7886,
         "lat": 14.4067,
-        "ok": {"JZ", "J", "JV", "Z"}
+        "ok": ["JZ", "J", "JV", "Z"]
     },
     "Kamšak": {
         "lon": 46.3579,
         "lat": 15.259,
-        "ok": {"JZ", "J"}
+        "ok": ["JZ", "J"]
     },
     "Konjiška gora": {
         "lon": 46.3347,
         "lat": 15.3466,
-        "ok": {"JZ", "J"}
+        "ok": ["JZ", "J"]
     },
     "Mala Gora": {
         "lon": 46.3574,
         "lat": 15.3397,
-        "ok": {"JZ", "V", "SV"}
+        "ok": ["JZ", "V", "SV"]
     },
     "Malič": {
         "lon": 46.1822,
         "lat": 15.2056,
-        "ok": {"J", "JV"}
+        "ok": ["J", "JV"]
     },
     "Donačka gora": {
         "lon": 46.2616,
         "lat": 15.7313,
-        "ok": {"JZ", "J", "JV"}
+        "ok": ["JZ", "J", "JV"]
     },
     "Žusem": {
         "lon": 46.1519,
         "lat": 15.4909,
-        "ok": {"V", "SV", "S"}
+        "ok": ["V", "SV", "S"]
     },
     "Pohorje": {
         "lon": 46.5164,
         "lat": 15.58,
-        "ok": {"SV", "S", "SZ"}
+        "ok": ["SV", "S", "SZ"]
     },
     "Golte": {
         "lon": 46.3705,
         "lat": 14.9206,
-        "ok": {"J", "JV", "V"}
+        "ok": ["J", "JV", "V"]
     },
     "Golte": {
         "lon": 46.3705,
         "lat": 14.9206,
-        "ok": {"J", "JV", "V"}
+        "ok": ["J", "JV", "V"]
     }
 }
+
+siteListFile = open("sitelist.json", "r+")
+siteListFile.write(json.dumps(sites))
+siteListFile.close
+
+# TODO: if we encounter a new jump site, add it to the file with coordinates attached
+#       coordinates should be pulled from an api, such as https://positionstack.com
+# TODO: remove old sites from file
+# TODO: email notification for good wind? (i dont know how to get it automatically)
+
+
+def getPointsFromAPI():
+    # POST request
+    url = "http://skytech.si/skytechsys/data.php"
+    reqBody = {"c": "tabela"}
+    rawReq = requests.post(url=url, data=reqBody)
+
+    # parse html response, filter for site names, convert to strings and sort
+    skytech = BeautifulSoup(rawReq.text, features="html.parser")
+    lines = skytech.findAll("a", attrs={"id": "postaja-link"})
+    linesText = [line.string for line in lines]
+    linesText.sort()
+
+    return linesText
 
 
 @app.route("/list")
@@ -177,16 +209,26 @@ def getData():
     return json.dumps(jumpPointData)
 
 
+@app.route('/full')
+def allData():
+    # check if point is not in file
+    return ""
+
+
 @app.route('/')
 def hello():
     return redirect("static/index.html", code=302)
 
 
-# run() - runs the application on the local development server.
 # app.run(host, port, debug, options)
-# host - Hostname to listen on. Defaults to 127.0.0.1 (localhost).
-# port - defaults to 5000
-# debug = True for developement environment
+# host - Hostname to listen on
+# port - Default 5000
+# debug - True if you want to use the flask debugger
+# options - idk
 if __name__ == "__main__":
-    app.run('0.0.0.0',  port=5001)
+    # for dev only
+    xd = getPointsFromAPI()
+    print("Link so that you can use geolocation: http://localhost:5001")
+    # production
+    app.run('0.0.0.0', port=5001)
     # TODO: generate signed cert
