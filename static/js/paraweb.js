@@ -112,7 +112,6 @@ function getPoints() {
   var jumpPointsFromAPI = {}
   try {
     var xmlHttp = new XMLHttpRequest();
-    console.log(`${window.location.origin}/list`);
     xmlHttp.open("GET", `${window.location.origin}/list`, false);
     xmlHttp.send(null);
     jumpPointsFromAPI = JSON.parse(xmlHttp.responseText);
@@ -159,6 +158,24 @@ async function getWeather(callback) {
   callback();
 }
 
+function getAllData() {
+  var jumpPointsFromAPI = {}
+  try {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", `${window.location.origin}/full`, false);
+    xmlHttp.send(null);
+    jumpPointsFromAPI = JSON.parse(xmlHttp.responseText);
+  } catch (e) {
+    console.error(e)
+  }
+  if (jumpPointsFromAPI != {}) {
+    jumpPointsList = jumpPointsFromAPI;
+  }
+  else {
+    alert("There was an error loading jump point data.");
+  }
+}
+
 var afterWeather = () => {
   fillList();
   addPoints();
@@ -166,9 +183,17 @@ var afterWeather = () => {
   feather.replace();
 }
 
+/*  LEGACY
 // Load app info
 getPoints();
 getWeather(afterWeather);
+
+*/
+
+// Load site info
+getAllData()
+//console.log(jumpPointsList)
+afterWeather()
 
 // Set event listeners
 map.on("locationfound", setMapToUserLocation);
