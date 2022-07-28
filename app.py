@@ -1,6 +1,7 @@
 import json
 from os.path import exists
 import copy
+import site
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,7 +9,7 @@ from flask import Flask, redirect, request, Response
 
 import server.apiUtil as apiUtil
 
-# http://api.positionstack.com/v1/?access_key=ebecf82f61b08e636501c15807b3c2e1&query='{site} Slovenija'
+# http://api.positionstack.com/v1/?access_key=ebecf82f61b08e636501c15807b3c2e1&query={site}&country=SI
 # settings
 pw_host = "0.0.0.0"
 pw_port = 5001
@@ -196,22 +197,26 @@ def regenerateFile():
                 newSites[site] = sites[site]
 
         # get all new sites
-        notinSites = [site for site in availabileSites if site not in list(
+        notinHardcodedSites = [site for site in availabileSites if site not in list(
             newSites.keys())]
 
         # get data for all new sites
-        for site in notinSites:
+        for site in notinHardcodedSites:
             url = f"http://api.positionstack.com/v1/forward?access_key=ebecf82f61b08e636501c15807b3c2e1&query={site}&country=SI"
-            resp = requests.get(url).json()["data"]
-            if len(resp) != 0:
-                resp = resp[0]
-                new = {}
-                # lat and lon is switched around bc when they were creating the original "sites" dict, they did a fucking boo boo :(
-                # TODO: fuck... fucking fuck, why ;_; ... i will make a program that fixes this no way i'm doing it manually
-                new["lon"] = resp["latitude"]
-                new["lat"] = resp["longitude"]
-                new["ok"] = []
-                newSites[site] = new
+            resp = requests.get(url)
+            jsonified = resp.json()
+            data = jsonified["data"]
+            if len(data) != 0:
+                # print(resp)
+                if data[0] != []:
+                    data = data[0]
+                    new = {}
+                    # lat and lon is switched around bc when they were creating the original "sites" dict, they did a fucking boo boo :(
+                    # TODO: fuck... fucking fuck, why ;_; ... i will make a program that fixes this no way i'm doing it manually
+                    new["lon"] = data["latitude"]
+                    new["lat"] = data["longitude"]
+                    new["ok"] = []
+                    newSites[site] = new
         f.write(json.dumps(newSites))
         f.close()
         sites = newSites | sites
@@ -268,11 +273,28 @@ def getData():
 @app.route('/full')
 def allData():
     global sites
+    tempSites = copy.deepcopy(sites)
     parsed = BeautifulSoup(getRawFromAPI(), features="html.parser")
-    allRows = list(parsed.find_all("tr"))
+    allRows = parsed.find_all("tr")
+    for row in allRows:
+        child = row.findChildren("td")
+        siteData = []
+        for c in child:
+            # c.text == each cell of a row (which is one jumpsite)
+            siteData.append(c.text)
+        # siteData = [name, wind speed, wind gust, wind direction, temperature, time and date of measurement]
+        if not len(siteData) == 0:
+            # filter out missing stations that we couldn't find location data for
+            if siteData[0] in tempSites.keys():
+                temp = tempSites[siteData[0]]
+                temp["windSpeed"] = siteData[1]
+                temp["windGust"] = siteData[2]
+                temp["windDirection"] = siteData[3]
+                temp["temperature"] = siteData[4]
+                temp["timeAndDate"] = siteData[5]
+                tempSites[siteData[0]] = temp
 
-    temp = copy.deepcopy(sites)
-    return Response(json.dumps(sites), mimetype="application/json")
+    return Response(json.dumps(tempSites), mimetype="application/json")
 
 
 @app.route('/')
@@ -283,7 +305,7 @@ def hello():
 # app.run(host, port, debug)
 # host - Hostname to listen on
 # port - Default 5000
-# debug - True if you want to use the flask debugger (hot reloads, debug server)
+# debug - True if you want to use the flask debugger (hot reloads, debugging checkpoints)
 if __name__ == "__main__":
     # for dev only
     xd = getPointsFromAPI()
