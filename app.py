@@ -1,13 +1,13 @@
 import json
 from os.path import exists
 import copy
-import site
 
 import requests
 from bs4 import BeautifulSoup
 from flask import Flask, redirect, request, Response
 
 import server.apiUtil as apiUtil
+import server.weatherManager as wm
 
 # http://api.positionstack.com/v1/?access_key=ebecf82f61b08e636501c15807b3c2e1&query={site}&country=SI
 # settings
@@ -292,6 +292,11 @@ def allData():
                 temp["windDirection"] = siteData[3]
                 temp["temperature"] = siteData[4]
                 temp["timeAndDate"] = siteData[5]
+                weatherAPI = wm.manager(temp["lat"], temp["lon"])
+                temp["weather"] = weatherAPI.getWeather()
+                temp["detailedWeather"] = weatherAPI.getDetailedWeather()
+                temp["humidity"] = weatherAPI.getHumidity()
+                temp["pressure"] = weatherAPI.getPressure()["press"]
                 tempSites[siteData[0]] = temp
 
     return Response(json.dumps(tempSites), mimetype="application/json")
