@@ -14,9 +14,7 @@ owm = OWM('fccbb7f106f4603371910d9b192f519e',
 class manager:
     def __init__(self, lat, lon):
         global owm
-
         # get weather
-        # TODO: ssl do be slow, ig use direct url calls?
         owmData = owm.one_call(
             lat, lon, exclude='minutely,hourly', units='metric')
         self.location = (lat, lon)

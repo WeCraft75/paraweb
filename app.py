@@ -161,6 +161,7 @@ sites = {
 
 # TODO: email notification for new site detected, so that i can manually add good wind? (i dont know how to get it automatically)
 #       oh, and the api for location can offer you multiple locations, so its better to add (or verify) each one manually
+#       or the api can offer you MULTIPLE LOCATIONS with NO DATA IN THEM (not even the query name), it was literally a list of empty lists, wtf?????
 
 
 # autosetup code
@@ -282,7 +283,7 @@ def allData():
         child = row.findChildren("td")
         siteData = []
         for c in child:
-            # c.text == each cell of a row (which is one jumpsite)
+            # c.text == each cell of a row (1 row/<tr> is one jumpsite)
             siteData.append(c.text)
         # siteData = [name, wind speed, wind gust, wind direction, temperature, time and date of measurement]
         if not len(siteData) == 0:
@@ -307,7 +308,6 @@ def allData():
                 temp["pressure"] = weatherAPI.getPressure()["press"]
                 tempSites[siteData[0]] = temp
 
-    # print(tempSites)
     return Response(json.dumps(tempSites), mimetype="application/json")
 
 
