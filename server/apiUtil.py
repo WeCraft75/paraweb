@@ -1,8 +1,10 @@
 # -*- coding: UTF-8 -*-
-from datetime import datetime
-import requests
 import re
+from datetime import datetime
+
+import requests
 from bs4 import BeautifulSoup
+
 import server.weatherManager as wm
 
 

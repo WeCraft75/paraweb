@@ -1,10 +1,12 @@
 apparmor==3.0.4
 appdirs==1.4.4
+attrs==21.4.0
 autopep8==1.5.7
 beautifulsoup4==4.9.3
 Brlapi==0.8.4
 btrfsutil==5.18.1
 CacheControl==0.12.6
+cattrs==22.1.0
 ceph==1.0.0
 ceph-volume==1.0.0
 cephfs==2.0.0
@@ -19,6 +21,7 @@ cryptography==37.0.4
 distlib==0.3.2
 distro==1.7.0
 docutils==0.19
+exceptiongroup==1.0.0rc8
 filelock==3.0.12
 Flask==2.0.1
 future==0.18.2
@@ -31,7 +34,7 @@ jaraco.text==3.8.1
 Jinja2==3.0.1
 LibAppArmor==3.0.4
 libfdt==1.6.1
-libtorrent==2.0.6
+libtorrent==2.0.7
 libvirt-python==8.5.0
 louis==3.22.0
 MarkupSafe==2.0.1
@@ -58,7 +61,6 @@ rbd==2.0.0
 requests==2.25.1
 resolvelib==0.8.1
 rgw==2.0.0
-rich @ file:///build/python-rich/src/rich-12.5.1/dist/rich-12.5.0-py3-none-any.whl
 six==1.16.0
 soupsieve==2.2.1
 team==1.0
@@ -67,6 +69,7 @@ toml==0.10.2
 tomli==2.0.1
 trove-classifiers==2022.7.22
 typing_extensions==4.2.0
+url-normalize==1.4.3
 urllib3==1.26.6
 validate-pyproject==0.9
 virtualenv==20.4.7

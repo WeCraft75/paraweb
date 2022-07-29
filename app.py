@@ -1,10 +1,11 @@
-import json
-from os.path import exists
 import copy
+import json
+from datetime import datetime
+from os.path import exists
 
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, redirect, request, Response
+from flask import Flask, Response, redirect, request
 
 import server.apiUtil as apiUtil
 import server.weatherManager as wm
@@ -224,7 +225,8 @@ def regenerateFile():
 
 
 if not exists(pw_sitelistFileName):
-    print(f"[WARNING] {pw_sitelistFileName} doesn't exist, recreating...")
+    print(
+        f"[WARNING] {pw_sitelistFileName} doesn't exist, recreating (takes ~60s)...")
     regenerateFile()
 else:
     with open(pw_sitelistFileName, "r") as f:
@@ -286,12 +288,18 @@ def allData():
         if not len(siteData) == 0:
             # filter out missing stations that we couldn't find location data for
             if siteData[0] in tempSites.keys():
+                # copy already existing data
                 temp = tempSites[siteData[0]]
-                temp["windSpeed"] = siteData[1]
-                temp["windGust"] = siteData[2]
+
+                # add data from skytech
+                temp["windSpeed"] = float(siteData[1].replace(" m/s", ""))
+                temp["windGust"] = float(siteData[2].replace(" m/s", ""))
                 temp["windDirection"] = siteData[3]
-                temp["temperature"] = siteData[4]
-                temp["timeAndDate"] = siteData[5]
+                temp["temperature"] = float(siteData[4].replace("°C", ""))
+                temp["timeAndDate"] = str(
+                    datetime.strptime(siteData[5], "%H:%M %d.%m.%Y"))
+
+                # add data from manager
                 weatherAPI = wm.manager(temp["lat"], temp["lon"])
                 temp["weather"] = weatherAPI.getWeather()
                 temp["detailedWeather"] = weatherAPI.getDetailedWeather()
@@ -299,10 +307,11 @@ def allData():
                 temp["pressure"] = weatherAPI.getPressure()["press"]
                 tempSites[siteData[0]] = temp
 
+    # print(tempSites)
     return Response(json.dumps(tempSites), mimetype="application/json")
 
 
-@app.route('/')
+@ app.route('/')
 def hello():
     return redirect("static/index.html", code=302)
 
@@ -315,6 +324,7 @@ if __name__ == "__main__":
     # for dev only
     xd = getPointsFromAPI()
     print("Link so that you can use geolocation: http://localhost:5001")
+
     # production
     app.run(pw_host, port=pw_port, debug=True)
     # TODO: generate certificate
