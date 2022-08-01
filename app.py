@@ -30,147 +30,35 @@ app = Flask(__name__, static_url_path='/static')
 
 
 # hardcoded list of sites, needed for more accurate jump point data and ugodni_veter (good_wind_direction) data
-sites = {
-    "Gozd": {
-        "lon": 46.3395,
-        "lat": 14.3313,
-        "ok": ["JZ", "J", "JV"]
-    },
-    "Ratitovec": {
-        "lon": 46.2361,
-        "lat": 14.0906,
-        "ok": ["J", "JV"]
-    },
-    "Vogar": {
-        "lon": 46.2946,
-        "lat": 13.8755,
-        "ok": ["JZ", "J", "JV"]
-    },
-    "Vogel": {
-        "lon": 46.2518,
-        "lat": 13.839,
-        "ok": ["JV", "V", "SV"]
-    },
-    "Kranjska Gora": {
-        "lon": 46.5044,
-        "lat": 13.7954,
-        "ok": ["J"]
-    },
-    "Ambrož pod Krvavcem": {
-        "lon": 46.2752,
-        "lat": 14.5279,
-        "ok": ["JZ", "J", "JV"]
-    },
-    "Kriška gora": {
-        "lon": 46.3515,
-        "lat": 14.3332,
-        "ok": ["JZ", "J", "JV"]
-    },
-    "Velika planina": {
-        "lon": 46.2946,
-        "lat": 14.6395,
-        "ok": ["J", "JV"]
-    },
-    "Mangrt": {
-        "lon": 46.4334,
-        "lat": 13.6407,
-        "ok": ["JZ", "J", "JV", "V", "Z"]
-    },
-    "Kobala": {
-        "lon": 46.1806,
-        "lat": 13.7791,
-        "ok": ["JZ", "J", "JV", "V", "Z"]
-    },
-    "Kovk": {
-        "lon": 45.8865,
-        "lat": 13.9591,
-        "ok": ["JZ", "J", "JV"]
-    },
-    "Kobariški Stol": {
-        "lon": 46.2727,
-        "lat": 13.4732,
-        "ok": ["JZ", "J", "JV", "V", "Z"]
-    },
-    "Srednji vrh (Matajur)": {
-        "lon": 46.209,
-        "lat": 13.5663,
-        "ok": ["SV", "S"]
-    },
-    "Kobariški Kuk - jug": {
-        "lon": 46.1952,
-        "lat": 13.6198,
-        "ok": ["JZ", "J", "JV"]
-    },
-    "Lijak": {
-        "lon": 45.9636,
-        "lat": 13.7236,
-        "ok": ["JZ", "J", "JV", "V", "Z"]
-    },
-    "Slivnica": {
-        "lon": 45.7886,
-        "lat": 14.4067,
-        "ok": ["JZ", "J", "JV", "Z"]
-    },
-    "Slivnica": {
-        "lon": 45.7886,
-        "lat": 14.4067,
-        "ok": ["JZ", "J", "JV", "Z"]
-    },
-    "Kamšak": {
-        "lon": 46.3579,
-        "lat": 15.259,
-        "ok": ["JZ", "J"]
-    },
-    "Konjiška gora": {
-        "lon": 46.3347,
-        "lat": 15.3466,
-        "ok": ["JZ", "J"]
-    },
-    "Mala Gora": {
-        "lon": 46.3574,
-        "lat": 15.3397,
-        "ok": ["JZ", "V", "SV"]
-    },
-    "Malič": {
-        "lon": 46.1822,
-        "lat": 15.2056,
-        "ok": ["J", "JV"]
-    },
-    "Donačka gora": {
-        "lon": 46.2616,
-        "lat": 15.7313,
-        "ok": ["JZ", "J", "JV"]
-    },
-    "Žusem": {
-        "lon": 46.1519,
-        "lat": 15.4909,
-        "ok": ["V", "SV", "S"]
-    },
-    "Pohorje": {
-        "lon": 46.5164,
-        "lat": 15.58,
-        "ok": ["SV", "S", "SZ"]
-    },
-    "Golte": {
-        "lon": 46.3705,
-        "lat": 14.9206,
-        "ok": ["J", "JV", "V"]
-    },
-    "Golte": {
-        "lon": 46.3705,
-        "lat": 14.9206,
-        "ok": ["J", "JV", "V"]
-    },
-    "Zavrh": {
-        "lon": 45.903366,
-        "lat": 14.353807,
-        "ok": []
-    }
-}
+sites = {"Ambrož pod Krvavcem": {"lat": 46.2752, "lon": 14.5279},
+         "Donačka gora": {"lat": 46.2616, "lon": 15.7313},
+         "Golte": {"lat": 46.3705, "lon": 14.9206},
+         "Gozd": {"lat": 46.3395, "lon": 14.3313},
+         "Kamšak": {"lat": 46.3579, "lon": 15.259},
+         "Kobala": {"lat": 46.1806, "lon": 13.7791},
+         "Kobariški Kuk - jug": {"lat": 46.1952, "lon": 13.6198},
+         "Kobariški Stol": {"lat": 46.2727, "lon": 13.4732},
+         "Konjiška gora": {"lat": 46.3347, "lon": 15.3466},
+         "Kovk": {"lat": 45.8865, "lon": 13.9591},
+         "Kranjska Gora": {"lat": 46.5044, "lon": 13.7954},
+         "Kriška gora": {"lat": 46.3515, "lon": 14.3332},
+         "Lijak": {"lat": 45.9636, "lon": 13.7236},
+         "Mala Gora": {"lat": 46.3574, "lon": 15.3397},
+         "Malič": {"lat": 46.1822, "lon": 15.2056},
+         "Mangrt": {"lat": 46.4334, "lon": 13.6407},
+         "Pohorje": {"lat": 46.5164, "lon": 15.58},
+         "Ratitovec": {"lat": 46.2361, "lon": 14.0906},
+         "Slivnica": {"lat": 45.7886, "lon": 14.4067},
+         "Srednji vrh (Matajur)": {"lat": 46.209, "lon": 13.5663},
+         "Velika planina": {"lat": 46.2946, "lon": 14.6395},
+         "Vogar": {"lat": 46.2946, "lon": 13.8755},
+         "Vogel": {"lat": 46.2518, "lon": 13.839},
+         "Zavrh": {"lat": 45.903366, "lon": 14.353807},
+         "Žusem": {"lat": 46.1519, "lon": 15.4909}}
 
 # TODO: email notification for new site detected, so that i can manually add good wind? (i dont know how to get it automatically)
 #       oh, and the api for location can offer you multiple locations, so its better to add (or verify) each one manually
-#       or the api can offer you MULTIPLE LOCATIONS with NO DATA IN THEM (not even the query name), it was literally a list of empty lists, wtf?????
+#       or the api can offer you MULTIPLE LOCATIONS with NO DATA IN THEM (not even any data about what you requested from it), it was literally a list of empty lists, wtf?????
 
 
 # autosetup code
@@ -222,10 +110,8 @@ def regenerateFile():
                 if data[0] != []:
                     data = data[0]
                     new = {}
-                    # lat and lon is switched around bc when they were creating the original "sites" dict, they did a fucking boo boo :(
-                    # TODO: fuck... fucking fuck, why ;_; ... i will make a program that fixes this no way i'm doing it manually
-                    new["lon"] = data["latitude"]
-                    new["lat"] = data["longitude"]
+                    new["lon"] = data["longitude"]
+                    new["lat"] = data["latitude"]
                     new["ok"] = []
                     newSites[site] = new
         f.write(json.dumps(newSites))
@@ -245,41 +131,9 @@ else:
 
 # Flask code
 
-
 @app.route("/list")
 def getList():
-    # returns sites dict without good wind ("ok")
-    sitelist = {}
-    for name in sites.keys():
-        filtered = {}
-        filtered["lat"] = sites[name].get("lat")
-        filtered["lon"] = sites[name].get("lon")
-        sitelist[name] = filtered
-    return Response(json.dumps(sitelist), mimetype="application/json")
-
-
-@app.route("/data")
-def getData():
-    # returns data for given name
-    name = request.args["jumpPoint"]
-    if name not in sites.keys():
-        return {"error": "pointNotFound", "message": "Jump point requested was not found"}, 404
-
-    args = sites.get(name)
-    util = apiUtil.start(name, args["lon"], args["lat"], args["ok"])
-    jumpPointData = {
-        "windSpeed": util.getWindSpeed(),
-        "windGust": util.getWindGust(),
-        "windDirection": util.getWindDirection(),
-        "temperature": util.getTemperature(),
-        "timeAndDate": util.getTimestamp(),
-        "isWindGood": util.isWindGood(),
-        "weather": util.getWeather(),
-        "detailedWeather": util.getDetailedWeather(),
-        "humidity": util.getHumidity(),
-        "pressure": util.getPressure()
-    }
-    return Response(json.dumps(jumpPointData), mimetype="application/json")
+    return Response(json.dumps(sites), mimetype="application/json")
 
 
 @app.route('/full')
@@ -310,7 +164,7 @@ def allData():
                     datetime.strptime(siteData[5], "%H:%M %d.%m.%Y"))
 
                 # add data from manager
-                observation = owm.weather_at_coords(lat=temp["lon"], lon=temp["lat"])
+                observation = owm.weather_at_coords(lat=temp["lat"], lon=temp["lon"])
                 temp["weather"] = observation.weather.status
                 temp["detailedWeather"] = observation.weather.detailed_status
 

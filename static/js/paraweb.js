@@ -70,8 +70,8 @@ function addPoints() {
       text += "<br/>Podatkov ni bilo mogoče pridobiti."
     }
 
-    var x = jumpPointsList[name].lon;
-    var y = jumpPointsList[name].lat;
+    var x = jumpPointsList[name].lat;
+    var y = jumpPointsList[name].lon;
 
     // create weather info popup
     // TODO: make it pretty
