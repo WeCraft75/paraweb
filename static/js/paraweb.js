@@ -34,14 +34,13 @@ function fillList() {
         break;
       default:
         if (foggy.includes(jumpPointsList[name]["weather"])) {
-          console.log("gotem");
           iconName = "menu";
         }
     }
     point.innerHTML = `${name} <div data-feather="${iconName}" class="weathericon"></div>`;
     point.setAttribute("name", name);
     point.setAttribute("onclick", "zoomOnPoint(this)");
-    // TODO: this is only text, make it remotely beautiful
+    // TODO: this is only text, it would be better to translate this info into an infographic style format
     sitelist.appendChild(point);
   });
 }
@@ -56,24 +55,18 @@ function zoomOnPoint(toFind) {
 }
 
 function addPoints() {
-  Object.keys(jumpPointsList).sort().forEach((name) => {
+  Object.keys(jumpPointsList).forEach((name) => {
     var singlepoint = jumpPointsList[name];
     var text = `<div class="popupheader">${name}</div>`;
+    // check if the jumppoint data contains all the info required to display in the popup
     if (Object.keys(singlepoint).length > 2) {
-      // if we have more than 2 datapoints, get was successful
-      if (singlepoint["isWindGood"]) {
-        text += "Veter je ugoden";
-      } else {
-        text += "Veter ni ugoden";
-      }
-      // add other info
+      // add info to popup
       var slovenianWindDir = singlepoint["windDirection"].replace("S", "J").replace("E", "V").replace("W", "Z").replace("N", "S");
-      text += `<br/>Veter piha v smeri ${slovenianWindDir} s hitrostjo ${singlepoint["windSpeed"]} m/s, ter sunki do ${singlepoint["windGust"]} m/s`;
+      text += `Veter piha v smeri ${slovenianWindDir} s hitrostjo ${singlepoint["windSpeed"]} m/s, ter sunki do ${singlepoint["windGust"]} m/s`;
       text += `<br/>Temperatura na vzletišču: ${singlepoint["temperature"]}°C`;
       text += `<br/>Trenutno vreme: ${singlepoint["detailedWeather"]}`;
 
     } else {
-      // if data fails to load, display error message
       text += "<br/>Podatkov ni bilo mogoče pridobiti."
     }
 

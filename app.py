@@ -2,10 +2,12 @@ import copy
 import json
 from datetime import datetime
 from os.path import exists
-
 import requests
+
 from bs4 import BeautifulSoup
 from flask import Flask, Response, redirect, request
+from pyowm.owm import OWM
+from pyowm.utils.config import get_default_config
 
 import server.apiUtil as apiUtil
 import server.weatherManager as wm
@@ -16,6 +18,13 @@ pw_host = "0.0.0.0"
 pw_port = 5001
 pw_sitelistFileName = "sitelist.json"
 
+# OWM setup
+configDict = get_default_config()
+configDict["language"] = "sl"
+# disabling ssl sped up the lookup for weather from 23s to 12s
+configDict["connection"]["use_ssl"] = False
+owm = OWM('fccbb7f106f4603371910d9b192f519e',
+          config=configDict).weather_manager()
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -208,7 +217,7 @@ def regenerateFile():
             resp = requests.get(url)
             jsonified = resp.json()
             data = jsonified["data"]
-            if len(data) != 0:
+            if len(data) > 0:
                 # print(resp)
                 if data[0] != []:
                     data = data[0]
@@ -301,11 +310,10 @@ def allData():
                     datetime.strptime(siteData[5], "%H:%M %d.%m.%Y"))
 
                 # add data from manager
-                weatherAPI = wm.manager(temp["lat"], temp["lon"])
-                temp["weather"] = weatherAPI.getWeather()
-                temp["detailedWeather"] = weatherAPI.getDetailedWeather()
-                temp["humidity"] = weatherAPI.getHumidity()
-                temp["pressure"] = weatherAPI.getPressure()["press"]
+                observation = owm.weather_at_coords(lat=temp["lon"], lon=temp["lat"])
+                temp["weather"] = observation.weather.status
+                temp["detailedWeather"] = observation.weather.detailed_status
+
                 tempSites[siteData[0]] = temp
 
     return Response(json.dumps(tempSites), mimetype="application/json")
