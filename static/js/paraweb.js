@@ -49,7 +49,7 @@ function zoomOnPoint(toFind) {
   Object.keys(jumpPointsList).forEach((name) => {
     if (toFind.getAttribute("name") == name) {
       var point = jumpPointsList[name];
-      map.flyTo([point.lon, point.lat], 14);
+      map.flyTo([point.lat, point.lon], 14);
     }
   });
 }
